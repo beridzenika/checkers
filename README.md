@@ -10,11 +10,15 @@ This projec is a Python Pygame game.
 
 ## Features
 
-for now just desplays the board
+* GUI desplays the board
+* At the begining the pieces are set on correct positions
+* On click you can see possible moves
+* You can move and capture other pieces
 
 ## Screenshots
 
 ![App Screenshot](screenshots/1.png)
+![App Screenshot](screenshots/2.png)
 
 ## Project Structure
 

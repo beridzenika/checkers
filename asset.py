@@ -3,18 +3,17 @@ import pygame
 class AssetManager():
     def __init__(self):
         self.textures = {}
-        self.load_pieces()
     
-    def load_image(self, name, path):
-        img=pygame.image.load(path).convert_alpha()
+    def load_image(self, name):
+        img=pygame.image.load(f"imgs/{name}.png").convert_alpha()
         self.textures[name]=img
         
 
     def load_pieces(self):
-        self.load_image("red","imgs/red.png")
-        self.load_image("black","imgs/black.png")
-        self.load_image("king-red","imgs/crown-red.png")
-        self.load_image("king-black","imgs/crown-black.png")
+        self.load_image("red")
+        self.load_image("black")
+        self.load_image("king-red")
+        self.load_image("king-black")
     
     def get_image(self, name, size=None):
         img=self.textures[name]

@@ -1,43 +1,33 @@
 import pygame
+from game import Game
 import config
-from asset import AssetManager
-from checkers import Checkers
-from board import Board
 
 pygame.init()
 
 screen = pygame.display.set_mode((config.screen_size,config.screen_size))
 
-# get images
-assets = AssetManager()
-king_red=assets.get_image("king-red")
-
-#board
-board = Board()
-
-#pieces
-pieces=Checkers()
-pieces.set_game(config.player)
+game = Game()
 
 #display
 pygame.display.set_caption("checkers game")
-pygame.display.set_icon(king_red)
+pygame.display.set_icon(game.get_con())
 
 # time management
 clock = pygame.time.Clock()
 running = True
 
 while(running):
-    screen.fill((config.back_color))
 
     #draw
-    board.draw(screen)
-    pieces.draw(screen)
+    game.draw(screen)
 
     #events
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            game.handle_click(pygame.mouse.get_pos())
+
 
     pygame.display.flip()
     clock.tick(60)
