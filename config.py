@@ -1,6 +1,7 @@
 screen_size=640
 piece_size=64
 board_size=8
+rows=3
 piece_fix=4
 border=20
 margin=(screen_size-piece_size*board_size)/2-border
@@ -12,6 +13,7 @@ select_color="#1E365A"
 border_color="#d66d27"
 back_color = "#496648"
 
-player="red"
+player=0
+players=["red", "black"]
 
 directions=[(1,1),(-1,1),(-1,-1),(1,-1)]

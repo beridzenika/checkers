@@ -26,7 +26,6 @@ This projec is a Python Pygame game.
   * imgs/
   * asset.py
   * board.py
-  * checkers.py
   * config.py
   * main.py
   * piece.py

@@ -2,24 +2,51 @@ import pygame
 import config
 from asset import AssetManager
 from board import Board
+from piece import Piece
 
 class Game():
     def __init__(self):
+        self.assets = AssetManager()
+        self.assets.load_pieces(config.piece_size-2*config.piece_fix)
+        self.textures=self.assets.textures
+        Piece.set_textures(self.textures)
+
         self.board = Board()
         self.board.set_game(config.player)
+
         self.pos_fix=config.border+config.margin
-        self.positions=[]
+        self.border_size=config.piece_size*config.board_size+config.border*2
+        self.selected_moves=[]
+        self.selected_piece=None
         self.captures={}
 
+    def draw_board(self, screen):
+        rec=pygame.Rect(config.margin, config.margin, self.border_size, self.border_size)
+        pygame.draw.rect(screen, config.border_color, rec)
+        
+        for i in range(config.board_size):
+            for j in range(config.board_size):
+                color = config.white_color if (i+j)%2==0 else config.black_color
+                rec=pygame.Rect(self.pos_fix + i*config.piece_size, self.pos_fix + j*config.piece_size, config.piece_size, config.piece_size)
+                pygame.draw.rect(screen, color, rec)
+
+    def draw_pieces(self, screen):
+        for row in self.board.board:
+            for piece in row:
+                if piece!=0:
+                    piece.draw(screen)  
+
     def draw_selected(self, screen):
-        for rec in self.positions:
-            pygame.draw.rect(screen, config.select_color, rec)
+        if self.selected_piece:
+            pygame.draw.rect(screen, config.select_color, self.make_rec(self.selected_piece.col,self.selected_piece.row))
+            for move in self.selected_moves:
+                pygame.draw.rect(screen, config.select_color, self.make_rec(move.to_pos[0],move.to_pos[1]))
 
     def draw(self, screen):
         screen.fill((config.back_color))
-        self.board.draw_board(screen)
+        self.draw_board(screen)
         self.draw_selected(screen)
-        self.board.draw_pieces(screen)
+        self.draw_pieces(screen)
 
     def handle_click(self, pos):
         col, row = pos
@@ -27,44 +54,28 @@ class Game():
         row=self.pos_to_idx(row)
 
         if (col>=0 and col<config.board_size and row>=0 and row<config.board_size):
-            if self.board.board[col][row]!=0: #selected a piece
-                self.positions=[]
-                self.captures={}
-                moves=self.board.valid_moves(col,row)
-                rec=self.make_rec(col, row)
-                self.positions.append(rec)
-                for m in moves:
-                    if type(m) is list:
-                        self.captures[m[1]]=m[0]
-                        m=m[1]
-                    rec=self.make_rec(m[0], m[1])
-                    self.positions.append(rec)
 
-            elif (col+row)%2==1 and self.make_rec(col, row) in self.positions: #clicked selected place
-                piece_rec=self.positions[0]
-                old_col = self.pos_to_idx(piece_rec.x)
-                old_row = self.pos_to_idx(piece_rec.y)
+            self.selected_piece=self.board.board[col][row]
+            if self.selected_piece!=0: #selecting a piece
+                self.selected_moves=self.board.valid_moves(col,row)
+                print(self.selected_piece.col,self.selected_piece.row)
 
-                if (col, row) in self.captures:
-                    captured=self.captures[(col, row)]
-                    self.board.board[captured[0]][captured[1]]=0
-
-                self.board.move_piece(self.board.board[old_col][old_row].image, col, row, old_col, old_row)
-                self.positions=[]
-                self.captures={}
-            else: #clicked unreachable place
-                self.positions=[]
-                self.captures={}
-
+            for move in self.selected_moves:
+                    if move.to_pos == (col, row):
+                        self.board.apply_move(move)
+                        self.selected_moves=[]
+                        self.selected_piece=None
 
     def make_rec(self, col, row):
         return pygame.Rect(self.pos_fix + col*config.piece_size, 
                            self.pos_fix + row*config.piece_size, 
                            config.piece_size, config.piece_size)
+    
     def pos_to_idx(self, pos):
         return int((pos-self.pos_fix)//self.pos_fix)
 
     def get_con(self):
+        #TO DO: change this
         assets = AssetManager()
         assets.load_image("king-red")
         return assets.get_image("king-red")
