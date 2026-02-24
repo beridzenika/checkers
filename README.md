@@ -22,8 +22,16 @@ This projec is a Python Pygame game.
 
 ## Project Structure
 
+
 * checkers/
-  * imgs/
+  * src/
+    * data/
+    * assets/
+      * imgs/
+    * UI/
+    * logic/
+    * main.py
+  * README.md
   * asset.py
   * board.py
   * config.py
