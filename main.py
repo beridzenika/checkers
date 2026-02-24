@@ -10,7 +10,7 @@ game = Game()
 
 #display
 pygame.display.set_caption("checkers game")
-pygame.display.set_icon(game.get_con())
+pygame.display.set_icon(game.get_icon())
 
 # time management
 clock = pygame.time.Clock()
@@ -20,6 +20,8 @@ while(running):
 
     #draw
     game.draw(screen)
+
+    game.game_over()
 
     #events
     for event in pygame.event.get():

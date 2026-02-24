@@ -20,15 +20,27 @@ class Game():
         self.selected_piece=None
         self.captures={}
 
+    def draw_title(self,screen):
+        font = pygame.font.SysFont(None, 48)
+        color = config.black_color if self.board.turn else config.border_color
+        text_surface = font.render(f"{str.capitalize(config.players[self.board.turn])}'s Turn", True, color)
+        screen.blit(text_surface, (20,10))
+
     def draw_board(self, screen):
-        rec=pygame.Rect(config.margin, config.margin, self.border_size, self.border_size)
-        pygame.draw.rect(screen, config.border_color, rec)
+        border=pygame.Rect(config.margin, config.margin, self.border_size, self.border_size)
+        pygame.draw.rect(screen, config.wood_color, border)
         
-        for col in range(config.board_size):
+        
+        pygame.draw.polygon(screen, config.border_color, [
+            (config.margin+self.border_size, config.margin+self.border_size),
+            (config.margin+self.border_size, config.margin),
+            (config.margin, config.margin+self.border_size)
+        ])
+        
+        for col in range(config.board_size): #actual tyles
             for row in range(config.board_size):
                 color = config.white_color if (col+row)%2==0 else config.black_color
-                rec=pygame.Rect(self.pos_fix + col*config.piece_size, self.pos_fix + row*config.piece_size, config.piece_size, config.piece_size)
-                pygame.draw.rect(screen, color, rec)
+                pygame.draw.rect(screen, color, self.make_tyle(col, row))
 
     def draw_pieces(self, screen):
         for row in self.board.board:
@@ -38,15 +50,17 @@ class Game():
 
     def draw_selected(self, screen):
         if self.selected_piece:
-            pygame.draw.rect(screen, config.select_color, self.make_rec(self.selected_piece.col,self.selected_piece.row))
+            pygame.draw.rect(screen, config.select_color, self.make_tyle(self.selected_piece.col,self.selected_piece.row))
             for move in self.selected_moves:
-                pygame.draw.rect(screen, config.select_color, self.make_rec(move.to_pos[0],move.to_pos[1]))
+                pygame.draw.rect(screen, config.select_color, self.make_tyle(move.to_pos[0],move.to_pos[1]))
 
     def draw(self, screen):
         screen.fill((config.back_color))
         self.draw_board(screen)
         self.draw_selected(screen)
         self.draw_pieces(screen)
+        self.draw_title(screen)
+
 
     def handle_click(self, pos):
         col, row = pos
@@ -78,17 +92,21 @@ class Game():
         self.selected_moves=[]
         self.selected_piece=None
 
-    def make_rec(self, col, row):
+    def make_tyle(self, col, row):
         return pygame.Rect(self.pos_fix + col*config.piece_size, 
                            self.pos_fix + row*config.piece_size, 
                            config.piece_size, config.piece_size)
     
-    def pos_to_idx(self, pos):
-        return int((pos-self.pos_fix)//self.pos_fix)
+    def game_over(self):
+        if self.board.is_game_over:
+            self.board.set_game(config.player)
+            self.board.is_game_over=False
 
-    def get_con(self):
-        #TO DO: change this
-        assets = AssetManager()
-        assets.load_image("king-red")
-        return assets.get_image("king-red")
+
+    
+    def pos_to_idx(self, pos):
+        return int((pos-self.pos_fix)//config.piece_size)
+
+    def get_icon(self):
+        return self.assets.get_image(config.icon)
     

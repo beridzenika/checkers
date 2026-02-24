@@ -5,18 +5,19 @@ from moves import Moves
 
 class Board():
     def __init__(self):
-        self.board = [
-            [0 for _ in range(config.board_size)]
-            for _ in range(config.board_size)
-        ]
         self.player1=config.players[0]
         self.player2=config.players[1]
         self.turn=config.turn
         self.are_captures=False
+        self.is_game_over=False
 
 
     def set_game(self, player):
-        if(player!=config.players[0]):
+        self.board = [
+            [0 for _ in range(config.board_size)]
+            for _ in range(config.board_size)
+        ]
+        if(player == config.players[0]):
             self.player1, self.player2 = self.player2, self.player1
         
         for row in range(config.board_size):
@@ -81,23 +82,6 @@ class Board():
 
         self.set_turn()
         self.scan_board_moves()
-        
-    
-    def scan_board_moves(self):
-        self.are_captures = False
-        self.capture_moves = {}
-        
-        for row in range(config.board_size):
-            for col in range(config.board_size):
-                piece = self.board[col][row]
-        
-                if(piece != 0 and 
-                   piece.color == config.players[self.turn]):
-                    moves = self.valid_moves(col, row)
-                    self.get_capture_moves(moves, col, row)
-        
-    def set_turn(self):
-        self.turn = 1 - self.turn # change turns from 1-0 and 0-1
 
     def get_capture_moves(self, moves, col, row):
         capture_moves = [m for m in moves if m.captured]
@@ -106,3 +90,25 @@ class Board():
             self.capture_moves[(col, row)] = capture_moves
             return True
         return False
+        
+    def scan_board_moves(self):
+        self.are_captures = False
+        self.capture_moves = {}
+        has_piece = False
+        has_move = False
+        for row in range(config.board_size):
+            for col in range(config.board_size):
+                piece = self.board[col][row]
+
+                if(piece != 0 and 
+                   piece.color == config.players[self.turn]):
+                    has_piece = True
+                    moves = self.valid_moves(col, row)
+                    if moves:
+                        has_move = True
+                    self.get_capture_moves(moves, col, row)
+        if not has_piece or not has_move:
+            self.is_game_over = True
+
+    def set_turn(self):
+        self.turn = 1 - self.turn # change turns from 1-0 and 0-1
