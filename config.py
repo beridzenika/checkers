@@ -13,6 +13,7 @@ select_color="#1E365A"
 border_color="#d66d27"
 back_color = "#496648"
 
+turn=0
 player=0
 players=["red", "black"]
 

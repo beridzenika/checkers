@@ -24,10 +24,10 @@ class Game():
         rec=pygame.Rect(config.margin, config.margin, self.border_size, self.border_size)
         pygame.draw.rect(screen, config.border_color, rec)
         
-        for i in range(config.board_size):
-            for j in range(config.board_size):
-                color = config.white_color if (i+j)%2==0 else config.black_color
-                rec=pygame.Rect(self.pos_fix + i*config.piece_size, self.pos_fix + j*config.piece_size, config.piece_size, config.piece_size)
+        for col in range(config.board_size):
+            for row in range(config.board_size):
+                color = config.white_color if (col+row)%2==0 else config.black_color
+                rec=pygame.Rect(self.pos_fix + col*config.piece_size, self.pos_fix + row*config.piece_size, config.piece_size, config.piece_size)
                 pygame.draw.rect(screen, color, rec)
 
     def draw_pieces(self, screen):
@@ -52,19 +52,31 @@ class Game():
         col, row = pos
         col=self.pos_to_idx(col)
         row=self.pos_to_idx(row)
+    
+        if (col >= 0 and col < config.board_size and 0 <= row < config.board_size):
+            self.selected_piece = self.board.board[col][row]
+            
+            if self.selected_piece != 0: #selecting a piece according to turn
+                if self.selected_piece.color == config.players[self.board.turn]:
 
-        if (col>=0 and col<config.board_size and row>=0 and row<config.board_size):
-
-            self.selected_piece=self.board.board[col][row]
-            if self.selected_piece!=0: #selecting a piece
-                self.selected_moves=self.board.valid_moves(col,row)
-                print(self.selected_piece.col,self.selected_piece.row)
+                    if self.board.are_captures:
+                        if (col, row) in self.board.capture_moves:
+                            self.selected_moves = self.board.capture_moves[(col,row)]
+                        else:
+                            self.selected_moves = []
+                    else:
+                        self.selected_moves = self.board.valid_moves(col,row)
+                else:
+                    self.unselect_pieces()
 
             for move in self.selected_moves:
                     if move.to_pos == (col, row):
                         self.board.apply_move(move)
-                        self.selected_moves=[]
-                        self.selected_piece=None
+                        self.unselect_pieces()
+
+    def unselect_pieces(self):
+        self.selected_moves=[]
+        self.selected_piece=None
 
     def make_rec(self, col, row):
         return pygame.Rect(self.pos_fix + col*config.piece_size, 
