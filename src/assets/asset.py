@@ -1,11 +1,16 @@
+from pathlib import Path
 import pygame
+
+BASE_DIR = Path(__file__).resolve().parent
+IMG_DIR = BASE_DIR / "imgs"
 
 class AssetManager():
     def __init__(self):
         self.textures = {}
     
     def load_image(self, name, size=None):
-        img=pygame.image.load(f"imgs/{name}.png").convert_alpha()
+        path = IMG_DIR / f"{name}.png"
+        img=pygame.image.load(str(path)).convert_alpha()
         if size:
             img=pygame.transform.scale(img, (size, size))
         self.textures[name]=img

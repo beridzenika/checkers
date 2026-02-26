@@ -4,7 +4,9 @@ board_size = 8
 rows = 3
 piece_fix = 4
 border = 20
-margin = (screen_size-piece_size*board_size)/2-border
+pos_fix = (screen_size-piece_size * board_size)/2
+margin = pos_fix - border
+
 checker_size = piece_size-2*piece_fix
 
 white_color = "#ff9f50"
@@ -15,7 +17,7 @@ wood_color = "#e27f3d"
 back_color = "#496648"
 
 turn = 0
-player = "black"
+player = "red"
 players = ["red", "black"]
 
 icon = "king-red"

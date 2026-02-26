@@ -1,6 +1,6 @@
 import pygame
-from game import Game
-import config
+from ui.game import Game
+import config.config as config
 
 pygame.init()
 

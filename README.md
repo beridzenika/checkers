@@ -25,19 +25,19 @@ This projec is a Python Pygame game.
 
 * checkers/
   * src/
-    * data/
     * assets/
+      * asset.py
       * imgs/
+    * config/
+      * config.py
     * UI/
+      *game.py
     * logic/
+      * board.py
+      * piece.py
     * main.py
   * README.md
-  * asset.py
-  * board.py
-  * config.py
-  * main.py
-  * piece.py
-
+  
 ## Installation
 
 Just need Python and install Pygame
