@@ -52,6 +52,31 @@ class Renderer:
         screen.blit(text_surface, (20,10))
 
 
+    def draw_menu(self, screen, player_button, player, bot_button):
+        x=config.margin
+        y=config.margin*2
+        w=self.border_size
+        h=self.border_size/3*2
+        marg=20
+        pad=50
+        pygame.draw.rect(screen, config.wood_color, (x, y, w, h))
+        pygame.draw.rect(screen, config.white_color, (x+marg, y+marg, w-marg*2, h-marg*2))
+
+        font = pygame.font.SysFont(None, 32)
+
+        text_surface = font.render(f"Player1 {str.capitalize(config.players[player])}", True, config.border_color)
+        screen.blit(text_surface, (x+pad,y+pad))
+
+        text_surface = font.render(f"Player2 {str.capitalize(config.players[1 - player])}", True, config.border_color)
+        screen.blit(text_surface, (w/2+x+pad,y+pad))
+
+        player_button.draw(screen, config.border_color, (x+pad, y+pad*2), config.white_color)
+
+        bot_button.draw(screen, config.border_color, (w/2+x+pad, y+pad*2), config.white_color)
+        
+
+
+
     def get_icon(self):
         return self.assets.get_image(config.icon)
 

@@ -17,8 +17,9 @@ wood_color = "#e27f3d"
 back_color = "#496648"
 
 turn = 0
-player = "red"
+player = 0
 players = ["red", "black"]
+vs_bot = True
 
 icon = "king-red"
 

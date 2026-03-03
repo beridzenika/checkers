@@ -29,9 +29,11 @@ while(running):
             running = False
         if event.type == pygame.MOUSEBUTTONDOWN:
             game.handle_click(pygame.mouse.get_pos())
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_SPACE:
+                game.handle_pause()
 
-
-    pygame.display.flip()
+    pygame.display.flip()   
     clock.tick(60)
 pygame.quit()
 
